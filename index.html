@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Nancy Didi</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Poppins:wght@300;400;500;600;800&display=swap');
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Poppins', sans-serif;
+            background: #111;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Main Card Container */
+        .card-container {
+            position: relative;
+            width: 100%;
+            max-width: 450px;
+            height: 100%;
+            max-height: 850px;
+            background: #000;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.8);
+            overflow: hidden;
+            border-radius: 12px;
+        }
+
+        /* Surprise Video */
+        .bg-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            z-index: 1;
+            transition: opacity 1.5s ease-in;
+        }
+
+        /* Inside Glass Box */
+        .inside-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 85%;
+            height: 60%;
+            transform: translate(-50%, -50%) scale(0.85);
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            color: #ffffff;
+            opacity: 0;
+            transition: opacity 1.5s ease, transform 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 3;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            perspective: 1000px; /* For 3D doors */
+        }
+
+        .inside-content.revealed {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        /* Phase 1: Birthday Text */
+        .bday-text {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 30px 20px;
+            box-sizing: border-box;
+            transition: opacity 1s ease, transform 1s ease;
+        }
+
+        .bday-text h2 {
+            font-size: 1rem;
+            margin-bottom: 0px;
+            font-weight: 400;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: #ffb6c1;
+        }
+
+        .bday-text h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.2rem;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            line-height: 1.1;
+            text-shadow: 0 0 10px rgba(255,255,255,0.5), 0 0 20px #ff1493;
+        }
+
+        .bday-text p.message {
+            font-size: 1.05rem;
+            font-weight: 300;
+            line-height: 1.6;
+            margin-top: 15px;
+            font-style: italic;
+            color: #fdf5e6;
+        }
+
+        /* Phase 2: Biryani Door Scene */
+        .door-scene {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: none;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+
+        .biryani-text {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            z-index: 1;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .biryani-text h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            line-height: 1.3;
+            color: #fff;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.8);
+        }
+
+        .biryani-text .highlight {
+            font-size: 3.5rem;
+            color: #ffaa00; /* Biryani color */
+            text-transform: uppercase;
+            text-shadow: 0 0 15px #ff7700;
+            display: block;
+            margin: 10px 0;
+        }
+
+        /* The 3D Doors */
+        .door {
+            position: absolute;
+            top: 0; 
+            width: 50%; 
+            height: 100%;
+            background: linear-gradient(135deg, #2a0815, #4a1525);
+            z-index: 5;
+            transition: transform 1.5s cubic-bezier(0.64, 0.04, 0.26, 1.01);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .left-door {
+            left: 0;
+            transform-origin: left;
+            border-right: 3px solid #ffb6c1;
+        }
+
+        .right-door {
+            right: 0;
+            transform-origin: right;
+            border-left: 3px solid #ffb6c1;
+        }
+
+        .left-door.open { transform: rotateY(-95deg); }
+        .right-door.open { transform: rotateY(95deg); }
+
+        /* The Magical Key */
+        .key-container {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            text-align: center;
+            transition: opacity 0.5s;
+        }
+
+        .magic-key {
+            width: 60px;
+            height: 60px;
+            fill: #ffd700;
+            filter: drop-shadow(0 0 10px #ffb6c1);
+            cursor: pointer;
+            animation: floatKey 2s infinite ease-in-out;
+            transition: transform 0.8s ease;
+        }
+
+        @keyframes floatKey {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
+        }
+
+        .magic-key.turning {
+            animation: none;
+            transform: rotate(90deg) scale(0.8);
+        }
+
+        .tap-hint-text {
+            margin-top: 15px;
+            font-size: 0.8rem;
+            color: #ffd700;
+            letter-spacing: 2px;
+            animation: pulse 1s infinite alternate;
+        }
+
+        /* Cover Screen (Phase 0) */
+        .cover {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ffe4e1 0%, #ffb6c1 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: opacity 1s ease, transform 1.5s ease;
+            z-index: 20;
+        }
+
+        /* Balloon & Arrow Mechanics */
+        .balloon-container {
+            position: absolute;
+            top: 15%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: floatBalloon 3s ease-in-out infinite;
+        }
+
+        @keyframes floatBalloon {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(2deg); }
+        }
+
+        .balloon-svg {
+            width: 100px;
+            height: 100px;
+            filter: drop-shadow(0 10px 15px rgba(255, 20, 147, 0.4));
+            transition: all 0.1s ease-out;
+        }
+
+        .balloon-string {
+            width: 2px;
+            height: 60px;
+            background: #ff69b4;
+            opacity: 0.7;
+        }
+
+        .shooter-area {
+            position: absolute;
+            bottom: 15%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: grab;
+            width: 100px;
+            padding: 20px;
+        }
+
+        .shooter-area:active { cursor: grabbing; }
+
+        .arrow {
+            width: 30px;
+            height: 80px;
+            transition: transform 0.1s;
+        }
+
+        .hint {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.85rem;
+            color: #d81159;
+            margin-top: 20px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-align: center;
+            animation: pulse 1.5s infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.5; transform: scale(0.95); }
+            100% { opacity: 1; transform: scale(1.05); }
+        }
+
+        /* Confetti Overlay */
+        #confetti-container {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 15; overflow: hidden;
+        }
+        .confetti-piece {
+            position: absolute; width: 8px; height: 16px; top: -20px; opacity: 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card-container">
+    
+    <!-- Background Video -->
+    <video id="surpriseVideo" class="bg-video" loop playsinline muted>
+        <source src="100202.mp4" type="video/mp4">
+    </video>
+
+    <!-- Phase 1 & 2 Glass Content -->
+    <div class="inside-content" id="insideContent">
+        
+        <!-- Phase 1: Bday Text -->
+        <div class="bday-text" id="bdayText">
+            <h2>Happy Birthday</h2>
+            <h1>Nancy Didi</h1>
+            <p class="message">
+                "You’ve always been my built-in teammate and the one person who truly gets our crazy family. Wishing you the happiest year ahead, sis."
+            </p>
+        </div>
+
+        <!-- Phase 2: The Door & Biryani Text -->
+        <div class="door-scene" id="doorScene">
+            <div class="biryani-text">
+                <h1>CHALO AB <span class="highlight">BIRYANI</span> KHILA DO  </h1>
+            </div>
+            
+            <div class="door left-door" id="leftDoor"></div>
+            <div class="door right-door" id="rightDoor"></div>
+            
+            <div class="key-container" id="keyContainer">
+                <svg class="magic-key" id="magicKey" viewBox="0 0 24 24">
+                    <path d="M12.65 10A5.99 5.99 0 0 0 7 6c-3.31 0-6 2.69-6 6s2.69 6 6 6a5.99 5.99 0 0 0 5.65-4H17v4h4v-4h2v-4H12.65zM7 14c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/>
+                </svg>
+                <div class="tap-hint-text">TAP TO UNLOCK</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Confetti Container -->
+    <div id="confetti-container"></div>
+
+    <!-- The Interactive Cover (Phase 0) -->
+    <div class="cover" id="cover">
+        <div class="balloon-container" id="balloonTarget">
+            <svg class="balloon-svg" id="heartBalloon" viewBox="0 0 32 32" fill="#ff1493">
+                <path d="M16 28 C 16 28, 4 18, 4 10 C 4 5, 10 3, 16 9 C 22 3, 28 5, 28 10 C 28 18, 16 28, 16 28 Z"/>
+                <path d="M9 10 C 9 7, 12 5, 14 6 C 12 7, 11 9, 11 11 Z" fill="rgba(255,255,255,0.4)"/>
+            </svg>
+            <div class="balloon-string" id="balloonString"></div>
+        </div>
+        
+        <div class="shooter-area" id="shooter">
+            <svg class="arrow" id="arrowSvg" viewBox="0 0 24 24" fill="none" stroke="#d81159" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="22" x2="12" y2="2"></line>
+                <polyline points="5,9 12,2 19,9"></polyline>
+            </svg>
+            <div class="hint" id="hintText">PULL ARROW DOWN<br>& RELEASE</div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // Elements Setup
+    const cover = document.getElementById('cover');
+    const shooter = document.getElementById('shooter');
+    const arrowSvg = document.getElementById('arrowSvg');
+    const balloonTarget = document.getElementById('balloonTarget');
+    const heartBalloon = document.getElementById('heartBalloon');
+    const balloonString = document.getElementById('balloonString');
+    const insideContent = document.getElementById('insideContent');
+    const bdayText = document.getElementById('bdayText');
+    const doorScene = document.getElementById('doorScene');
+    const magicKey = document.getElementById('magicKey');
+    const keyContainer = document.getElementById('keyContainer');
+    const leftDoor = document.getElementById('leftDoor');
+    const rightDoor = document.getElementById('rightDoor');
+    const confettiContainer = document.getElementById('confetti-container');
+    const surpriseVideo = document.getElementById('surpriseVideo');
+    const hintText = document.getElementById('hintText');
+
+    // Shoot mechanics
+    let isDragging = false;
+    let startY = 0;
+    let currentY = 0;
+    let translateY = 0;
+    let hasShot = false;
+
+    shooter.addEventListener('mousedown', startDrag);
+    shooter.addEventListener('touchstart', startDrag, { passive: true });
+    window.addEventListener('mousemove', drag);
+    window.addEventListener('touchmove', drag, { passive: true });
+    window.addEventListener('mouseup', endDrag);
+    window.addEventListener('touchend', endDrag);
+
+    function startDrag(e) {
+        if(hasShot) return;
+        isDragging = true;
+        startY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
+        arrowSvg.style.transition = 'none'; 
+    }
+
+    function drag(e) {
+        if (!isDragging || hasShot) return;
+        currentY = e.type.includes('mouse') ? e.clientY : e.touches[0].clientY;
+        let diff = currentY - startY;
+        if (diff > 0) {
+            translateY = diff * 0.7; 
+            if(translateY < 120) {
+                arrowSvg.style.transform = `translateY(${translateY}px)`;
+            }
+        }
+    }
+
+    function endDrag() {
+        if (!isDragging || hasShot) return;
+        isDragging = false;
+        
+        if (translateY > 50) {
+            hasShot = true;
+            hintText.style.opacity = '0'; 
+            
+            // 1. Shoot Arrow
+            arrowSvg.style.transition = 'transform 0.4s cubic-bezier(0.5, 0, 1, 1)'; 
+            arrowSvg.style.transform = 'translateY(-600px)'; 
+            
+            // 2. Pop Balloon
+            setTimeout(() => {
+                heartBalloon.style.transform = 'scale(1.5)';
+                heartBalloon.style.opacity = '0';
+                balloonString.style.opacity = '0';
+                createMiniPopExplosion(); 
+
+                // 3. Reveal Birthday Msg & Video
+                setTimeout(() => {
+                    cover.style.opacity = '0';
+                    cover.style.pointerEvents = 'none'; 
+                    surpriseVideo.style.opacity = '1';
+                    surpriseVideo.play().catch(e => console.log("Autoplay blocked."));
+                    
+                    setTimeout(() => {
+                        insideContent.classList.add('revealed');
+                        fireConfetti();
+                        
+                        // 4. Transition to Door Phase (After 5 seconds)
+                        setTimeout(showDoorPhase, 5500);
+
+                    }, 500);
+                }, 400);
+            }, 200);
+            
+        } else {
+            arrowSvg.style.transition = 'transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+            arrowSvg.style.transform = 'translateY(0)';
+            translateY = 0;
+        }
+    }
+
+    function createMiniPopExplosion() {
+        const colors = ['#ff1493', '#ff69b4', '#fff'];
+        for (let i = 0; i < 15; i++) {
+            let dot = document.createElement('div');
+            dot.style.position = 'absolute';
+            dot.style.width = '10px';
+            dot.style.height = '10px';
+            dot.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            dot.style.borderRadius = '50%';
+            dot.style.top = '40%';
+            dot.style.left = '50%';
+            
+            let angle = Math.random() * Math.PI * 2;
+            let radius = 60 + Math.random() * 40;
+            let tx = Math.cos(angle) * radius;
+            let ty = Math.sin(angle) * radius;
+
+            balloonTarget.appendChild(dot);
+            dot.animate([
+                { transform: 'translate(-50%, -50%) scale(1)', opacity: 1 },
+                { transform: `translate(calc(-50% + ${tx}px), calc(-50% + ${ty}px)) scale(0)`, opacity: 0 }
+            ], { duration: 400, easing: 'ease-out', fill: 'forwards' });
+        }
+    }
+
+    // Door Phase Logic
+    function showDoorPhase() {
+        // Fade out birthday text
+        bdayText.style.transform = 'scale(0.9)';
+        bdayText.style.opacity = '0';
+        
+        setTimeout(() => {
+            bdayText.style.display = 'none';
+            // Fade in Door Scene
+            doorScene.style.display = 'block';
+            setTimeout(() => {
+                doorScene.style.opacity = '1';
+            }, 100);
+        }, 1000);
+    }
+
+    // Unlock Door Action
+    magicKey.addEventListener('click', () => {
+        // Turn Key
+        magicKey.classList.add('turning');
+        
+        setTimeout(() => {
+            // Fade Key Out
+            keyContainer.style.opacity = '0';
+            
+            setTimeout(() => {
+                keyContainer.style.display = 'none';
+                // OPEN DOORS!
+                leftDoor.classList.add('open');
+                rightDoor.classList.add('open');
+            }, 400);
+        }, 600);
+    });
+
+    function fireConfetti() {
+        const colors = ['#ffb6c1', '#ffd700', '#ff69b4', '#00ffff', '#ffffff'];
+        for (let i = 0; i < 100; i++) {
+            let confetti = document.createElement('div');
+            confetti.className = 'confetti-piece';
+            
+            let color = colors[Math.floor(Math.random() * colors.length)];
+            let left = Math.random() * 100;
+            let fallDuration = Math.random() * 2.5 + 2; 
+            let delay = Math.random() * 0.8;
+            
+            confetti.style.backgroundColor = color;
+            confetti.style.left = left + '%';
+            
+            confetti.animate([
+                { transform: `translate3d(0,0,0) rotate(0deg)`, opacity: 1, top: '-20px' },
+                { transform: `translate3d(${Math.random()*150-75}px, 1000px, 0) rotate(${Math.random()*720}deg)`, opacity: 0, top: '1000px' }
+            ], {
+                duration: fallDuration * 1000,
+                delay: delay * 1000,
+                easing: 'cubic-bezier(.37,0,.63,1)',
+                fill: 'forwards'
+            });
+
+            confettiContainer.appendChild(confetti);
+        }
+    }
+</script>
+
+</body>
+</html>
